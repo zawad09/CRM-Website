@@ -29,3 +29,5 @@ dev.log
 prisma/dev.db
 prisma/dev.db-journal
 *.db
+
+!.env.example

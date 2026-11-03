@@ -5,7 +5,7 @@ WhatsApp, Facebook, website and phone calls, fills details from pasted messages
 with AI, suggests replies and shows a pipeline.
 
 Built with Next.js (App Router) + TypeScript + Tailwind CSS, MongoDB Atlas
-(official `mongodb` driver), Google Gemini via `@google/genai`, zod and
+(official `mongodb` driver), Groq (Llama models) via the `openai` SDK, zod and
 dnd-kit.
 
 ## Status (step 1 of 7)
@@ -44,7 +44,7 @@ seed + evaluate scripts (step 6), README polish and deploy notes (step 7).
    - `MONGODB_URI` — Atlas connection string (Cluster > Connect > Drivers)
    - `MONGODB_DB` — database name (optional, defaults to the one in the URI)
    - `GROQ_API_KEY` — API key from the Groq console (used for AI features)
-   - `GROQ_MODEL` — optional; defaults to `openai/gpt-oss-20b` if the configured model is unavailable
+   - `GROQ_MODEL` — optional; defaults to `llama-3.1-8b-instant`
 
 4. Run the app:
 
