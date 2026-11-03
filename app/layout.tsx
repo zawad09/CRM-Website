@@ -15,7 +15,6 @@ const saira = Saira({
 // Noto Sans Bengali via the font stack.
 const bengali = Noto_Sans_Bengali({
   subsets: ["bengali"],
-  weight: ["400", "500", "600"],
   variable: "--font-bengali",
   display: "swap",
 });
