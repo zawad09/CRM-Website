@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { apiError } from "@/lib/api";
 import { buildDashboardStats, statsToPrompt } from "@/lib/dashboard";
 import { getEnquiriesCollection } from "@/lib/db";
-import { aiWeeklySummary } from "@/lib/gemini";
+import { aiWeeklySummary } from "@/lib/groq";
 import { serializeEnquiry } from "@/lib/serialize";
 
 export const dynamic = "force-dynamic";

@@ -138,7 +138,11 @@ export default function HomePage() {
         <button
           type="button"
           onClick={() => setStaleOnly((v) => !v)}
-          className={staleOnly ? btnPrimary : btnSecondary}
+          className={
+            staleOnly
+              ? "inline-flex items-center justify-center gap-2 rounded-md border border-rose-300 bg-rose-50 px-3.5 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 disabled:cursor-not-allowed disabled:opacity-60"
+              : "inline-flex items-center justify-center gap-2 rounded-md border border-rose-300 bg-white px-3.5 py-2 text-sm font-medium text-rose-700 transition-colors hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-400/40 disabled:cursor-not-allowed disabled:opacity-60"
+          }
         >
           Needs follow-up{staleCount ? ` (${staleCount})` : ""}
         </button>

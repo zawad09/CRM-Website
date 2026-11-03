@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiError, firstIssueMessage, readJsonBody } from "@/lib/api";
-import { aiReply } from "@/lib/gemini";
+import { aiReply } from "@/lib/groq";
 import { replyBodySchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";

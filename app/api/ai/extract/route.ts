@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { apiError, firstIssueMessage, readJsonBody } from "@/lib/api";
-import { aiExtract } from "@/lib/gemini";
+import { aiExtract } from "@/lib/groq";
 import { extractBodySchema } from "@/lib/validation";
 
 export const dynamic = "force-dynamic";
