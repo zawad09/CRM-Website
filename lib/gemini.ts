@@ -1,4 +1,4 @@
-import { GoogleGenAI } from "@google/genai";
+import OpenAI from "openai";
 import { heuristicExtract } from "./extract";
 import { heuristicReply } from "./reply";
 import type {
@@ -10,26 +10,31 @@ import type {
 } from "./types";
 
 function getApiKey(): string | null {
-  const key = process.env.GEMINI_API_KEY?.trim();
+  const key = process.env.GROQ_API_KEY?.trim();
   return key ? key : null;
 }
 
 function modelCandidates(): string[] {
-  const preferred = process.env.GEMINI_MODEL?.trim();
-  const fallbacks = ["gemini-3.5-flash-lite", "gemini-2.5-flash", "gemini-2.0-flash"];
+  const preferred = process.env.GROQ_MODEL?.trim();
+  const fallbacks = ["openai/gpt-oss-20b", "openai/gpt-oss-120b"];
   return [...new Set([preferred, ...fallbacks].filter((m): m is string => Boolean(m)))];
+}
+
+function errorStatus(err: unknown): number | undefined {
+  const s = (err as { status?: unknown })?.status;
+  return typeof s === "number" ? s : undefined;
 }
 
 function friendlyAiError(err: unknown): string {
   const raw = err instanceof Error ? err.message : String(err);
-  if (raw.includes("GEMINI_API_KEY")) return "Add GEMINI_API_KEY in .env.local.";
-  if (raw.includes("NOT_FOUND") || raw.includes("no longer available")) {
-    return "The Gemini model name is outdated. Set GEMINI_MODEL=gemini-3.5-flash-lite.";
+  const status = errorStatus(err);
+  if (raw.includes("GROQ_API_KEY")) return "Add GROQ_API_KEY in .env.local.";
+  if (status === 404 || raw.includes("model_not_found")) {
+    return "The Groq model name is not available. Set GROQ_MODEL=openai/gpt-oss-20b.";
   }
-  if (raw.includes("API_KEY_INVALID") || raw.includes("401") || raw.includes("403")) {
-    return "The Gemini API key was rejected.";
-  }
-  return "Gemini did not respond.";
+  if (status === 401 || status === 403) return "The Groq API key was rejected.";
+  if (status === 429) return "Groq rate limit reached. Try again in a minute.";
+  return "Groq did not respond.";
 }
 
 function parseJsonObject(text: string): Record<string, unknown> {
@@ -46,32 +51,30 @@ function parseJsonObject(text: string): Record<string, unknown> {
 
 async function generateText(prompt: string, json: boolean): Promise<string> {
   const apiKey = getApiKey();
-  if (!apiKey) throw new Error("GEMINI_API_KEY is not set");
-  const ai = new GoogleGenAI({ apiKey });
+  if (!apiKey) throw new Error("GROQ_API_KEY is not set");
+  const client = new OpenAI({
+    apiKey,
+    baseURL: "https://api.groq.com/openai/v1",
+  });
   let lastError: unknown;
   for (const model of modelCandidates()) {
     try {
-      const response = await ai.models.generateContent({
+      const completion = await client.chat.completions.create({
         model,
-        contents: prompt,
-        config: {
-          temperature: json ? 0.2 : 0.6,
-          maxOutputTokens: 1024,
-          ...(json ? { responseMimeType: "application/json" } : {}),
-        },
+        messages: [{ role: "user", content: prompt }],
+        temperature: json ? 0.2 : 0.6,
+        max_tokens: 1024,
+        ...(json ? { response_format: { type: "json_object" as const } } : {}),
       });
-      const text = response.text?.trim();
+      const text = completion.choices[0]?.message?.content?.trim();
       if (!text) throw new Error("Empty model response");
       return text;
     } catch (err) {
       lastError = err;
-      const msg = err instanceof Error ? err.message : String(err);
-      if (!msg.includes("NOT_FOUND") && !msg.includes("no longer available") && !msg.includes("404")) {
-        throw err;
-      }
+      if (errorStatus(err) !== 404) throw err;
     }
   }
-  throw lastError instanceof Error ? lastError : new Error("Gemini did not respond.");
+  throw lastError instanceof Error ? lastError : new Error("Groq did not respond.");
 }
 
 const SOURCES: EnquirySource[] = ["whatsapp", "facebook", "website", "phone"];

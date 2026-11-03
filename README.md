@@ -43,8 +43,8 @@ seed + evaluate scripts (step 6), README polish and deploy notes (step 7).
 
    - `MONGODB_URI` — Atlas connection string (Cluster > Connect > Drivers)
    - `MONGODB_DB` — database name (optional, defaults to the one in the URI)
-   - `GEMINI_API_KEY` — Google AI Studio key (used from step 3 on)
-   - `GEMINI_MODEL` — optional, defaults to `gemini-2.5-flash-lite` (never a Pro model)
+   - `GROQ_API_KEY` — API key from the Groq console (used for AI features)
+   - `GROQ_MODEL` — optional; defaults to `openai/gpt-oss-20b` if the configured model is unavailable
 
 4. Run the app:
 
