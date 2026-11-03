@@ -1,0 +1,31 @@
+# dependencies
+/node_modules
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# environment files (never commit secrets)
+.env*
+!.env.example
+
+# local test artifacts
+.memory-mongo-uri
+.mongodata/
+
+# misc
+.DS_Store
+*.pem
+npm-debug.log*
+*.tsbuildinfo
+
+dev.log
+*.log
+.vercel
+
+prisma/dev.db
+prisma/dev.db-journal
+*.db

@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Saira is the only font; Noto Sans Bengali is loaded after it so Bangla
+   script falls back to a glyph-complete face (Saira has no Bangla glyphs). */
+body,
+button,
+input,
+select,
+textarea {
+  font-family: var(--font-saira), var(--font-bengali), ui-sans-serif, system-ui,
+    -apple-system, "Segoe UI", sans-serif;
+}
